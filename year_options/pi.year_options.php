@@ -4,7 +4,7 @@ $plugin_info = array(
     'pi_name' => 'Thotbox Year Options',
     'pi_author' =>'Shane Woodward',
     'pi_description' => 'Generates options for select fields starting from current year',
-    'pi_version' =>'1.0',
+    'pi_version' =>'1.0.1',
     'pi_usage' => year_options::usage()
 );
 
@@ -19,12 +19,13 @@ class year_options {
         $years = $this->EE->TMPL->fetch_param('years');
         $value_prefix = $this->EE->TMPL->fetch_param('value_prefix');
         $text_prefix = $this->EE->TMPL->fetch_param('text_prefix');
+        $offset = $this->EE->TMPL->fetch_param('offset');
         $current_year = date('Y');
-        $stop_year = $current_year - $years;
+        $stop_year = ($current_year - $offset) - $years;
 
         $result = '';
 
-        foreach (range($current_year, $stop_year) as $years) {
+        foreach (range(($current_year-$offset), $stop_year) as $years) {
             $result .= '<option value="'.$value_prefix.$years.'">'.$text_prefix.$years.'</option>';
         }
 
@@ -34,7 +35,7 @@ class year_options {
     public function usage() {
         ob_start();
     ?>
-        Use {exp:year_options years="" value_prefix="" text_prefix=""} to output year options.
+        Use {exp:year_options years="" value_prefix="" text_prefix="" offset=""} to output year options.
     <?php
         $text = ob_get_contents();
         ob_end_clean();
